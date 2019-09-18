@@ -8,6 +8,8 @@
 # temp3 = $16
 # Var Ax = $17
 # MultFoldCount = $13
+# largest C = $18
+# div4Loop = $20
 
 lui $8, 0xFA19
 ori $8, $8, 0xE366
@@ -17,7 +19,6 @@ addi $9, $0, 1
 ori $10, $0, 0x2020
 addi $11, $0, 100
 addi $13, $0, 5
-
 
 loop_100:
 
@@ -55,4 +56,47 @@ addi $11, $11, -1	# increment 100 loop counter
 bne $11, $0, loop_100
 
 
+# highest = $8
+# 100 loop count down = $9
+# addr = $10
+# highest addr = $11
+# 4 check loop = $15
+# 4 divide result = $16
+# slt = $17
+# srl/sll = $18
+# final addr = $19
+# final addr addr = $20
 
+
+
+addi $11, $0, 1
+addi $12, $0, 2
+addi $13, $0, 3
+addi $14, $0, 4
+
+
+addi $9, $0, 100
+addi $15, $0, 2
+ori $19, $0, 0x2000
+ori $20, $0, 0x2004
+ori $10, $0, 0x2020
+lbu $8, 0($10)
+ori $10, $0, 0x2021
+
+loop_2:
+lbu $18, 0($10)
+
+slt $17, $18, $8	#if new bit($18) < highest($8), then $17=1
+bne $17, $0, skip	#skips is $17 != 0
+
+add $8, $18, $0
+add $11, $10, $0
+
+skip:
+addi $9, $9, -1	# increment 100 loop counter
+addi $15, $15, 1
+addi $10, $10, 1
+bne $9, $0, loop_2
+
+sb $8, 0($19)
+sw $11, 0($20)	
